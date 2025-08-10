@@ -1,0 +1,74 @@
+# 데이터셋 설정 파일
+# YOLO 형식의 데이터셋 설정
+
+# 데이터셋 경로
+path: ./data/datasets/kitti_subset  # 데이터셋 루트 경로
+train: images/train  # 학습 이미지 경로
+val: images/val      # 검증 이미지 경로
+test: images/test    # 테스트 이미지 경로
+
+# 클래스 정보
+nc: 4  # 클래스 수
+names: ['car', 'person', 'traffic_light', 'stop_sign']  # 클래스 이름
+
+# 데이터셋 메타데이터
+# KITTI 데이터셋 기반 자율주행 객체 탐지
+dataset_info:
+  name: "KITTI Subset for Autonomous Driving"
+  description: "Subset of KITTI dataset focused on autonomous driving objects"
+  version: "1.0"
+  created_by: "YOLO Experiment Team"
+  
+# 클래스별 정보
+class_info:
+  car:
+    description: "Vehicle (car, truck, bus)"
+    color: [255, 0, 0]  # Red
+    priority: 1
+    
+  person:
+    description: "Pedestrian"
+    color: [0, 255, 0]  # Green
+    priority: 2
+    
+  traffic_light:
+    description: "Traffic light"
+    color: [0, 0, 255]  # Blue
+    priority: 3
+    
+  stop_sign:
+    description: "Stop sign"
+    color: [255, 255, 0]  # Yellow
+    priority: 4
+
+# 데이터 분할 정보
+split_info:
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  
+# 이미지 정보
+image_info:
+  width: 1242  # KITTI 기본 이미지 너비
+  height: 375  # KITTI 기본 이미지 높이
+  channels: 3
+  
+# 라벨링 정보
+labeling_info:
+  format: "YOLO"  # YOLO 형식 (x_center, y_center, width, height)
+  coordinate_system: "normalized"  # 정규화된 좌표 (0-1)
+  
+# 데이터 증강 기본 설정
+augmentation_defaults:
+  hsv_h: 0.015  # HSV 색조 변화
+  hsv_s: 0.7    # HSV 채도 변화
+  hsv_v: 0.4    # HSV 명도 변화
+  degrees: 0.0  # 회전 각도
+  translate: 0.1  # 이동
+  scale: 0.5     # 스케일
+  shear: 0.0     # 기울기
+  perspective: 0.0  # 원근 변환
+  flipud: 0.0    # 상하 뒤집기
+  fliplr: 0.5    # 좌우 뒤집기
+  mosaic: 1.0    # 모자이크 증강
+  mixup: 0.0     # 믹스업 증강 

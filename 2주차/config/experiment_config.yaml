@@ -1,0 +1,196 @@
+# 실험 설정 파일
+# YOLO 학습 및 평가 설정
+
+# 실험 기본 정보
+experiment:
+  name: "yolo_autonomous_driving"
+  description: "YOLO model for autonomous driving object detection"
+  version: "1.0"
+  created_date: "2024-01-01"
+
+# 모델 설정
+model:
+  name: "yolov8s"  # 모델 종류: yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
+  pretrained: true  # 사전 훈련된 가중치 사용
+  weights: "yolov8s.pt"  # 사전 훈련된 가중치 파일
+
+# 학습 설정
+training:
+  # 기본 하이퍼파라미터
+  epochs: 100
+  batch_size: 16
+  imgsz: 640  # 입력 이미지 크기
+  
+  # 학습률 설정
+  lr0: 0.01  # 초기 학습률
+  lrf: 0.1   # 최종 학습률 비율
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+  
+  # 옵티마이저 설정
+  optimizer: "SGD"  # SGD, Adam, AdamW
+  nesterov: true
+  
+  # 스케줄러 설정
+  scheduler: "cosine"  # cosine, linear, step
+  lr_scheduler: "cosine"
+  
+  # 체크포인트 설정
+  save_period: 10  # 몇 에포크마다 저장할지
+  save_dir: "runs/train"
+  
+# 데이터 증강 설정
+augmentation:
+  # 기본 증강
+  hsv_h: 0.015  # HSV 색조 변화
+  hsv_s: 0.7    # HSV 채도 변화
+  hsv_v: 0.4    # HSV 명도 변화
+  
+  # 기하학적 변환
+  degrees: 0.0  # 회전 각도
+  translate: 0.1  # 이동
+  scale: 0.5     # 스케일
+  shear: 0.0     # 기울기
+  perspective: 0.0  # 원근 변환
+  
+  # 뒤집기
+  flipud: 0.0    # 상하 뒤집기
+  fliplr: 0.5    # 좌우 뒤집기
+  
+  # 고급 증강
+  mosaic: 1.0    # 모자이크 증강
+  mixup: 0.0     # 믹스업 증강
+  copy_paste: 0.0  # 복사-붙여넣기
+  
+  # 노이즈 및 블러
+  blur: 0.0      # 가우시안 블러
+  noise: 0.0     # 노이즈 추가
+
+# 추론 설정
+inference:
+  conf_thres: 0.25  # 신뢰도 임계값
+  iou_thres: 0.6    # NMS IoU 임계값
+  max_det: 300      # 최대 탐지 객체 수
+  classes: null     # 특정 클래스만 탐지 (null이면 모든 클래스)
+  
+# 평가 설정
+evaluation:
+  # 평가 지표
+  metrics: ["mAP@0.5", "mAP@0.5:0.95", "precision", "recall"]
+  
+  # IoU 임계값
+  iou_thresholds: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  
+  # 클래스별 평가
+  per_class_metrics: true
+  
+  # 시각화
+  save_plots: true
+  save_txt: false
+  save_conf: false
+
+# 성능 최적화 설정
+optimization:
+  # 메모리 최적화
+  cache: false  # 이미지 캐싱
+  workers: 8    # 데이터 로더 워커 수
+  
+  # GPU 설정
+  device: "auto"  # auto, 0, 1, cpu
+  amp: true       # Automatic Mixed Precision
+  
+  # 배치 처리
+  batch_size_inference: 1
+  
+# 로깅 설정
+logging:
+  # TensorBoard
+  tensorboard: true
+  log_dir: "runs/logs"
+  
+  # Weights & Biases (선택사항)
+  wandb: false
+  wandb_project: "yolo-autonomous-driving"
+  wandb_entity: null
+  
+  # 콘솔 로깅
+  verbose: true
+  save_metrics: true
+
+# 실험 변형 설정 (Ablation Study)
+ablation_studies:
+  # 해상도 실험
+  resolution_experiments:
+    - name: "baseline_640"
+      imgsz: 640
+    - name: "high_res_800"
+      imgsz: 800
+    - name: "low_res_512"
+      imgsz: 512
+      
+  # 배치 크기 실험
+  batch_size_experiments:
+    - name: "batch_16"
+      batch_size: 16
+    - name: "batch_32"
+      batch_size: 32
+    - name: "batch_8"
+      batch_size: 8
+      
+  # 데이터 증강 실험
+  augmentation_experiments:
+    - name: "no_mosaic"
+      mosaic: 0.0
+    - name: "no_hsv"
+      hsv_h: 0.0
+      hsv_s: 0.0
+      hsv_v: 0.0
+    - name: "strong_aug"
+      hsv_h: 0.03
+      hsv_s: 0.8
+      hsv_v: 0.5
+      translate: 0.2
+      scale: 0.7
+
+# 모델 내보내기 설정
+export:
+  formats: ["onnx", "torchscript", "tflite"]
+  dynamic: true
+  simplify: true
+  opset: 11  # ONNX opset 버전
+  
+# 성능 벤치마크 설정
+benchmark:
+  # 벤치마크 설정
+  warmup_iterations: 500
+  benchmark_iterations: 2000
+  input_sizes: [640, 800, 1024]
+  
+  # 측정 지표
+  metrics: ["fps", "latency", "throughput", "memory"]
+  
+  # 하드웨어 정보
+  hardware_info: true
+  gpu_utilization: true
+
+# 실험 결과 저장 설정
+results:
+  save_dir: "experiments"
+  save_config: true
+  save_logs: true
+  save_plots: true
+  save_predictions: false
+  
+# 검증 설정
+validation:
+  val: true
+  save_json: false
+  save_hybrid: false
+  conf: 0.001
+  iou: 0.6
+  max_det: 300
+  half: true
+  dnn: false 
