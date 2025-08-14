@@ -1,6 +1,4 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
-
-# 리뷰 세미나: Su, H., et al. (2023). "Recent advancements in multimodal human–robot interaction" (Frontiers in Neurorobotics, 17:1084000)
+# Su, H., et al. (2023). "Recent advancements in multimodal human–robot interaction" (Frontiers in Neurorobotics, 17:1084000)
 
 
 ***
